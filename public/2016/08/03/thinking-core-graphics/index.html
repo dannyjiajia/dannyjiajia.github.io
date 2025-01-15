@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>说说Core Graphics | Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="记得11年左右做iOS开发的人真不多,大环境下大家学习iOS开发基本都靠WWDC和国外的文献,近几年随着iOS开发的火爆,好多技术都被挖掘出来(其实是自己以前英文不好,好多东西都是点到为止),最近比较闲重新看了下iOS相关的一些东西.感觉有些东西虽然不是常用的,但明白后可以更灵活的运用到日常的开发中.这里记录下我对iOS里一些特性理解. 为什么说Core Graphics是广义的离屏渲染?首先看G">
+<meta property="og:type" content="article">
+<meta property="og:title" content="说说Core Graphics">
+<meta property="og:url" content="http://dannyjiajia.github.io/2016/08/03/thinking-core-graphics/index.html">
+<meta property="og:site_name" content="Notes">
+<meta property="og:description" content="记得11年左右做iOS开发的人真不多,大环境下大家学习iOS开发基本都靠WWDC和国外的文献,近几年随着iOS开发的火爆,好多技术都被挖掘出来(其实是自己以前英文不好,好多东西都是点到为止),最近比较闲重新看了下iOS相关的一些东西.感觉有些东西虽然不是常用的,但明白后可以更灵活的运用到日常的开发中.这里记录下我对iOS里一些特性理解. 为什么说Core Graphics是广义的离屏渲染?首先看G">
+<meta property="og:locale">
+<meta property="og:image" content="http://cc.cocimg.com/api/uploads/20150428/1430209790572112.png">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Bezier_2_big.gif/240px-Bezier_2_big.gif">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bezier_3_big.gif/240px-Bezier_3_big.gif">
+<meta property="article:published_time" content="2016-08-03T03:18:01.000Z">
+<meta property="article:modified_time" content="2025-01-15T07:50:19.263Z">
+<meta property="article:author" content="DannyHe">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cc.cocimg.com/api/uploads/20150428/1430209790572112.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">A place to record ideas(Archived)</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://dannyjiajia.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-thinking-core-graphics" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2016/08/03/thinking-core-graphics/" class="article-date">
+  <time class="dt-published" datetime="2016-08-03T03:18:01.000Z" itemprop="datePublished">2016-08-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      说说Core Graphics
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>记得11年左右做iOS开发的人真不多,大环境下大家学习iOS开发基本都靠WWDC和国外的文献,近几年随着iOS开发的火爆,好多技术都被挖掘出来(其实是自己以前英文不好,好多东西都是点到为止),最近比较闲重新看了下iOS相关的一些东西.感觉有些东西虽然不是常用的,但明白后可以更灵活的运用到日常的开发中.这里记录下我对iOS里一些特性理解.</p>
+<h2 id="为什么说Core-Graphics是广义的离屏渲染"><a href="#为什么说Core-Graphics是广义的离屏渲染" class="headerlink" title="为什么说Core Graphics是广义的离屏渲染?"></a>为什么说Core Graphics是广义的离屏渲染?</h2><p>首先看GPU屏幕渲染两种方式:</p>
+<ul>
+<li>On-Screen Rendering:意为当前屏幕渲染，指的是GPU的渲染操作是在当前用于显示的屏幕缓冲区中进行。</li>
+<li>Off-Screen Rendering:意为离屏渲染，指的是GPU在当前屏幕缓冲区以外新开辟一个缓冲区进行渲染操作。</li>
+</ul>
+<p>上面的两种方式都是在GPU中执行的,离屏渲染会开辟一个缓冲区上下文进行渲染(这里不会在屏幕上显示),然后进行上下的切换.比如将之前开辟的缓冲区设置为当前屏幕的缓冲区(显示到屏幕),但这里开销比较大。<br>而<code>Core Graphics</code>是<code>Software rendering</code>,也就是<code>CPU</code>执行<code>GPU</code>上一样的算法(<code>GPU</code>能更好的执行并发任务).<br>参考:<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Software_rendering">https://en.wikipedia.org/wiki/Software_rendering</a></p>
+<h2 id="为什么说离屏渲染并不意味着软件绘制"><a href="#为什么说离屏渲染并不意味着软件绘制" class="headerlink" title="为什么说离屏渲染并不意味着软件绘制?"></a>为什么说离屏渲染并不意味着软件绘制?</h2><p><code>QuartzCore Framework</code>通过<code>Core Anmation</code>来把我们构建的界面绘制到屏幕上(通过操作openGL ES).<br>这里面会使用<code>openGL ES</code>的缓冲区,它是在<code>GPU</code>里执行的。比如<code>CALayer</code>的<code>masking</code>就使用了片段着色器.<br><img src="http://cc.cocimg.com/api/uploads/20150428/1430209790572112.png" alt="CoreAnmation"></p>
+<blockquote>
+<p>这里说明下CALayer的mask,它是根据设置的layer的alpha值进行过滤像素实现模板的(片段着色器),不是openGL ES中的模板测试实现的</p>
+</blockquote>
+<p>参考WWDC:<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2014/419/">https://developer.apple.com/videos/play/wwdc2014/419/</a></p>
+<h2 id="Quartz-2D-和Quartz-Core的区别是什么"><a href="#Quartz-2D-和Quartz-Core的区别是什么" class="headerlink" title="Quartz 2D 和Quartz Core的区别是什么?"></a>Quartz 2D 和Quartz Core的区别是什么?</h2><p><code>QuartzCore Framework</code>通过<code>Core Anmation</code>来把我们构建的界面绘制到屏幕上.<br><code>Quartz 2D</code>是<code>CoreGraphics Framework</code>下一套API</p>
+<h2 id="Core-Graphics有颜色的混合设置吗"><a href="#Core-Graphics有颜色的混合设置吗" class="headerlink" title="Core Graphics有颜色的混合设置吗?"></a>Core Graphics有颜色的混合设置吗?</h2><p><code>CGBlendMode</code>定义了很多预设模式,可以通过<code>drawInRect:blendMode:alpha:</code>或者<code>UIRectFillUsingBlendMode(...)</code>等函数进行混合模式的设置。</p>
+<h2 id="openGL-ES的数据可以用Core-Graphics绘制吗"><a href="#openGL-ES的数据可以用Core-Graphics绘制吗" class="headerlink" title="openGL ES的数据可以用Core Graphics绘制吗?"></a>openGL ES的数据可以用Core Graphics绘制吗?</h2><p>具体的转换方法参考这里:<a target="_blank" rel="noopener" href="http://gamesfromwithin.com/remixing-opengl-and-uikit">http://gamesfromwithin.com/remixing-opengl-and-uikit</a></p>
+<h2 id="如何理解贝塞尔曲线"><a href="#如何理解贝塞尔曲线" class="headerlink" title="如何理解贝塞尔曲线"></a>如何理解贝塞尔曲线</h2><p>通过维基百科的图理解:)</p>
+<ul>
+<li>二次贝塞尔曲线只有一个控制点p1<br><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Bezier_2_big.gif/240px-Bezier_2_big.gif" alt="二次贝塞尔曲线"></li>
+<li>三次贝塞尔曲线有两个控制点p1和p2<br><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bezier_3_big.gif/240px-Bezier_3_big.gif" alt="三次贝塞尔曲线"></li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/gnustep/quartzcore">https://github.com/gnustep/quartzcore</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/6d24a4c29e18">http://www.jianshu.com/p/6d24a4c29e18</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/0e785269dccc">http://www.jianshu.com/p/0e785269dccc</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://dannyjiajia.github.io/2016/08/03/thinking-core-graphics/" data-id="cm5xohyr600137ls91ypt8dlt" data-title="说说Core Graphics" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/16/autopackage/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          不同平台下的项目自动打包方式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/25/thinking-about-macro/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">以ABS宏为例说说Clang中的宏定义方式技巧</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ant/" rel="tag">Ant</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Antenna/" rel="tag">Antenna</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cocos2dx/" rel="tag">Cocos2dx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ETC/" rel="tag">ETC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GCD/" rel="tag">GCD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/" rel="tag">Gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Next/" rel="tag">Next</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Platform/" rel="tag">Platform</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RunLoop/" rel="tag">RunLoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/" rel="tag">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Mobile/" rel="tag">Windows Mobile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Phone/" rel="tag">Windows Phone</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/curl/" rel="tag">curl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lua/" rel="tag">lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zlib/" rel="tag">zlib</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 12.5px;">Android Studio</a> <a href="/tags/Ant/" style="font-size: 12.5px;">Ant</a> <a href="/tags/Antenna/" style="font-size: 12.5px;">Antenna</a> <a href="/tags/Cocos2dx/" style="font-size: 15px;">Cocos2dx</a> <a href="/tags/ETC/" style="font-size: 10px;">ETC</a> <a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/Gradle/" style="font-size: 12.5px;">Gradle</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/OpenGL/" style="font-size: 12.5px;">OpenGL</a> <a href="/tags/Optimize/" style="font-size: 10px;">Optimize</a> <a href="/tags/Platform/" style="font-size: 10px;">Platform</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RxJava/" style="font-size: 10px;">RxJava</a> <a href="/tags/Sublime/" style="font-size: 10px;">Sublime</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/Windows-Mobile/" style="font-size: 12.5px;">Windows Mobile</a> <a href="/tags/Windows-Phone/" style="font-size: 17.5px;">Windows Phone</a> <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/curl/" style="font-size: 10px;">curl</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/lua/" style="font-size: 10px;">lua</a> <a href="/tags/shell/" style="font-size: 12.5px;">shell</a> <a href="/tags/zlib/" style="font-size: 10px;">zlib</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/31/think-about-storio/">介绍下StorIOSQLite到RxJava</a>
+          </li>
+        
+          <li>
+            <a href="/2017/02/13/login-with-curl/">2017开篇:curl使用备忘</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/16/autopackage/">不同平台下的项目自动打包方式</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/03/thinking-core-graphics/">说说Core Graphics</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/25/thinking-about-macro/">以ABS宏为例说说Clang中的宏定义方式技巧</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 DannyHe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

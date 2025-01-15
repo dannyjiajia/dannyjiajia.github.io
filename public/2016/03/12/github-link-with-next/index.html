@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>谈谈next主题如何添加&#34;Fork me on Github&#34; | Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="说说这个站点是如何添加”Fork me on Github”,如果只是简单的添加只需要参考github的文档,将类似下面的代码添加到主题文件夹下layout文件夹下的_layout.swig文件中 1&lt;a href&#x3D;&quot;https:&#x2F;&#x2F;github.com&#x2F;you&quot;&gt;&lt;img style&#x3D;&quot;position: absolute; top: 0; lef">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谈谈next主题如何添加&quot;Fork me on Github&quot;">
+<meta property="og:url" content="http://dannyjiajia.github.io/2016/03/12/github-link-with-next/index.html">
+<meta property="og:site_name" content="Notes">
+<meta property="og:description" content="说说这个站点是如何添加”Fork me on Github”,如果只是简单的添加只需要参考github的文档,将类似下面的代码添加到主题文件夹下layout文件夹下的_layout.swig文件中 1&lt;a href&#x3D;&quot;https:&#x2F;&#x2F;github.com&#x2F;you&quot;&gt;&lt;img style&#x3D;&quot;position: absolute; top: 0; lef">
+<meta property="og:locale">
+<meta property="article:published_time" content="2016-03-12T14:59:19.000Z">
+<meta property="article:modified_time" content="2025-01-15T07:50:19.262Z">
+<meta property="article:author" content="DannyHe">
+<meta property="article:tag" content="Next">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">A place to record ideas(Archived)</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://dannyjiajia.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-github-link-with-next" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2016/03/12/github-link-with-next/" class="article-date">
+  <time class="dt-published" datetime="2016-03-12T14:59:19.000Z" itemprop="datePublished">2016-03-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      谈谈next主题如何添加&#34;Fork me on Github&#34;
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>说说这个站点是如何添加”Fork me on Github”,如果只是简单的添加只需要参考<a target="_blank" rel="noopener" href="https://github.com/blog/273-github-ribbons">github的文档</a>,<br>将类似下面的代码添加到主题文件夹下<code>layout</code>文件夹下的<code>_layout.swig</code>文件中</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://github.com/you&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">style</span>=<span class="string">&quot;position: absolute; top: 0; left: 0; border: 0;&quot;</span> <span class="attr">src</span>=<span class="string">&quot;https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;Fork me on GitHub&quot;</span> <span class="attr">data-canonical-src</span>=<span class="string">&quot;https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>比如我的<code>github</code>地址为:<code>https://github.com/dannyjiajia</code><br>所以上面的代码改为:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://github.com/dannyjiajia&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">style</span>=<span class="string">&quot;position: absolute; top: 0; left: 0; border: 0;&quot;</span> <span class="attr">src</span>=<span class="string">&quot;https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;Fork me on GitHub&quot;</span> <span class="attr">data-canonical-src</span>=<span class="string">&quot;https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>但是这样会有个问题：手机上的页面也会是这个效果,其他主题不知道，<code>next</code>主题会把页面的导航菜单给挡住。我这里采取的方式是只在<code>桌面版</code>的页面上添加。</strong></p>
+<p><del>修改<code>/themes/next/source/js/src/schemes/pisces.js</code></del><br>其实可以统一修改这个文件:<code>/themes/next/source/js/src/motion.js</code></p>
+<p>在<code>$(document).ready</code>函数内添加如下代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">NexT</span>.<span class="property">utils</span>.<span class="title function_">isDesktop</span>() &amp;&amp; $(<span class="variable language_">document</span>.<span class="property">body</span>).<span class="title function_">append</span>(<span class="string">&#x27;这里粘贴你修改后的html代码&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>over~ 这样就只会在桌面版的网页内显示”Fork me on Github”</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://dannyjiajia.github.io/2016/03/12/github-link-with-next/" data-id="cm5xohyr200047ls919sqaxeh" data-title="谈谈next主题如何添加&#34;Fork me on Github&#34;" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Next/" rel="tag">Next</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/03/28/think-about-android-gradle/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          对Android的Gradle插件的理解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/01/31/simple-write-ios-log/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">最简单的方法将iOS中的NSLog写入文件</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ant/" rel="tag">Ant</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Antenna/" rel="tag">Antenna</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cocos2dx/" rel="tag">Cocos2dx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ETC/" rel="tag">ETC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GCD/" rel="tag">GCD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/" rel="tag">Gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Next/" rel="tag">Next</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Platform/" rel="tag">Platform</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RunLoop/" rel="tag">RunLoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/" rel="tag">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Mobile/" rel="tag">Windows Mobile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Phone/" rel="tag">Windows Phone</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/curl/" rel="tag">curl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lua/" rel="tag">lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zlib/" rel="tag">zlib</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 12.5px;">Android Studio</a> <a href="/tags/Ant/" style="font-size: 12.5px;">Ant</a> <a href="/tags/Antenna/" style="font-size: 12.5px;">Antenna</a> <a href="/tags/Cocos2dx/" style="font-size: 15px;">Cocos2dx</a> <a href="/tags/ETC/" style="font-size: 10px;">ETC</a> <a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/Gradle/" style="font-size: 12.5px;">Gradle</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/OpenGL/" style="font-size: 12.5px;">OpenGL</a> <a href="/tags/Optimize/" style="font-size: 10px;">Optimize</a> <a href="/tags/Platform/" style="font-size: 10px;">Platform</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RxJava/" style="font-size: 10px;">RxJava</a> <a href="/tags/Sublime/" style="font-size: 10px;">Sublime</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/Windows-Mobile/" style="font-size: 12.5px;">Windows Mobile</a> <a href="/tags/Windows-Phone/" style="font-size: 17.5px;">Windows Phone</a> <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/curl/" style="font-size: 10px;">curl</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/lua/" style="font-size: 10px;">lua</a> <a href="/tags/shell/" style="font-size: 12.5px;">shell</a> <a href="/tags/zlib/" style="font-size: 10px;">zlib</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/31/think-about-storio/">介绍下StorIOSQLite到RxJava</a>
+          </li>
+        
+          <li>
+            <a href="/2017/02/13/login-with-curl/">2017开篇:curl使用备忘</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/16/autopackage/">不同平台下的项目自动打包方式</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/03/thinking-core-graphics/">说说Core Graphics</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/25/thinking-about-macro/">以ABS宏为例说说Clang中的宏定义方式技巧</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 DannyHe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

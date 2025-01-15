@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>WindowsPhone的TextBox多行支持及疑问 | Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="最近在使用2dx的时候改造了一个UIEditBox,使其支持多行输入,因为在Windows Phone上单行和多行输入都是使用同一个系统控件TextBox,关于如何使用多行输入,可以参考微软的文档 当然Cocos2dx在3.5以上的版本中已经是使用cpp(cx)的开发模板,大意的代码如下: 12m_textBox-&gt;TextWrapping &#x3D; Windows::UI::Xaml::Text">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WindowsPhone的TextBox多行支持及疑问">
+<meta property="og:url" content="http://dannyjiajia.github.io/2016/07/20/multiline-textbox-wp8-1/index.html">
+<meta property="og:site_name" content="Notes">
+<meta property="og:description" content="最近在使用2dx的时候改造了一个UIEditBox,使其支持多行输入,因为在Windows Phone上单行和多行输入都是使用同一个系统控件TextBox,关于如何使用多行输入,可以参考微软的文档 当然Cocos2dx在3.5以上的版本中已经是使用cpp(cx)的开发模板,大意的代码如下: 12m_textBox-&gt;TextWrapping &#x3D; Windows::UI::Xaml::Text">
+<meta property="og:locale">
+<meta property="article:published_time" content="2016-07-20T06:57:34.000Z">
+<meta property="article:modified_time" content="2025-01-15T07:50:19.262Z">
+<meta property="article:author" content="DannyHe">
+<meta property="article:tag" content="Windows Phone">
+<meta property="article:tag" content="Cocos2dx">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">A place to record ideas(Archived)</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://dannyjiajia.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-multiline-textbox-wp8-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2016/07/20/multiline-textbox-wp8-1/" class="article-date">
+  <time class="dt-published" datetime="2016-07-20T06:57:34.000Z" itemprop="datePublished">2016-07-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      WindowsPhone的TextBox多行支持及疑问
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>最近在使用2dx的时候改造了一个<a target="_blank" rel="noopener" href="https://github.com/cocos2d/cocos2d-x/blob/v3/cocos/ui/UIEditBox/UIEditBoxImpl-winrt.cpp">UIEditBox</a>,使其支持多行输入,因为在Windows Phone上单行和多行输入都是使用同一个系统控件<code>TextBox</code>,关于如何使用多行输入,可以参考微软的<a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/ms742157.aspx">文档</a></p>
+<p>当然Cocos2dx在3.5以上的版本中已经是使用cpp(cx)的开发模板,大意的代码如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m_textBox-&gt;TextWrapping = Windows::UI::Xaml::TextWrapping::Wrap;</span><br><span class="line">m_textBox-&gt;AcceptsReturn = true;</span><br></pre></td></tr></table></figure>
+
+<p>我们新加了一个类<code>UITextViewWinRT</code>提供系统的多行输入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void UITextViewWinRT::SetupTextBox()</span><br><span class="line">&#123;</span><br><span class="line">	RemoveTextBox();</span><br><span class="line">	m_textBox = ref new TextBox;</span><br><span class="line">	</span><br><span class="line">	m_textBox-&gt;Name = &quot;cocos2d_editbox_textbox&quot;;</span><br><span class="line">	m_textBox-&gt;MinWidth = 200;</span><br><span class="line">	m_textBox-&gt;PlaceholderText = m_strPlaceholder;</span><br><span class="line">	m_textBox-&gt;Select(m_textBox-&gt;Text-&gt;Length(), 0);</span><br><span class="line">	m_textBox-&gt;MaxLength = m_maxLength &lt; 0 ? 0 : m_maxLength;</span><br><span class="line">	m_textBox-&gt;MinHeight = 100;</span><br><span class="line">	m_textBox-&gt;MaxHeight = 200;</span><br><span class="line">	m_textBox-&gt;TextWrapping = Windows::UI::Xaml::TextWrapping::Wrap;</span><br><span class="line">	m_textBox-&gt;AcceptsReturn = true;</span><br><span class="line"></span><br><span class="line">	SetInputScope(m_textBox, m_inputMode);</span><br><span class="line">	m_textBox-&gt;Text = m_strText; //注意这行</span><br><span class="line">	auto g = findXamlElement(m_flyout-&gt;Content, &quot;cocos2d_editbox_grid&quot;);</span><br><span class="line">	auto grid = dynamic_cast&lt;Grid^&gt;(g);</span><br><span class="line">	grid-&gt;Children-&gt;InsertAt(0, m_textBox);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果阅读过官方的<code>UIEditBoxImpl-winrt.cpp</code>加上细心的同学会注意<code>m_textBox-&gt;Text = m_strText; //注意这行</code>这行代码,因为我将这段代码放到设置<code>TextBox</code>支持多行输出的代码后面了。</p>
+<p><strong>如果不这样的的话,如果你给<code>TextBox</code>设置多行文本的时候是无效的</strong>,猜想可能是系统在设置其文本属性的时候计算了文本的摆放的结构,当渲染的时候进行渲染.<br>Windows Phone的换行符为<code>\r\n</code>不是一般的<code>\n</code>,这会引起新的问题,2dx里将<code>unicode</code>码转化成<code>UTF8</code>在<code>Label</code>里显示<code>\r</code>会被显示为乱码！</p>
+<span id="more"></span>
+<p>我的修改方案是</p>
+<ul>
+<li><p>Platform::String(unicode)转为std::string(UTF8)的时候移除<code>\r</code>,因为在2dx的<code>Label</code>里<code>\n</code>就是表示换行</p>
+</li>
+<li><p>std::string转为Platform::String的时候将<code>\n</code>替换为<code>\r\n</code>,让系统控件识别换行</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">static std::string&amp;   replace_all_distinct(std::string&amp;   str, const   std::string&amp;   old_value, const  std::string&amp;   new_value)</span><br><span class="line">&#123;</span><br><span class="line">	for (std::string::size_type pos(0); pos != std::string::npos; pos += new_value.length())   &#123;</span><br><span class="line">		if ((pos = str.find(old_value, pos)) != std::string::npos)</span><br><span class="line">			str.replace(pos, old_value.length(), new_value);</span><br><span class="line">		else   break;</span><br><span class="line">	&#125;</span><br><span class="line">	return   str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Platform::String^ UITextViewImplWinrt::stringToPlatformString(std::string strSrc)</span><br><span class="line">&#123;</span><br><span class="line">	std::string newSrc = replace_all_distinct(strSrc, &quot;\n&quot;, &quot;\r\n&quot;);</span><br><span class="line">	// to wide char</span><br><span class="line">	int nStrLen = MultiByteToWideChar(CP_UTF8, 0, newSrc.c_str(), -1, NULL, 0);</span><br><span class="line">	wchar_t* pWStr = new wchar_t[nStrLen + 1];</span><br><span class="line">	memset(pWStr, 0, nStrLen + 1);</span><br><span class="line">	MultiByteToWideChar(CP_UTF8, 0, newSrc.c_str(), -1, pWStr, nStrLen);</span><br><span class="line">	Platform::String^ strDst = ref new Platform::String(pWStr);</span><br><span class="line">	delete[] pWStr;</span><br><span class="line">	return strDst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">std::string UITextViewImplWinrt::PlatformStringTostring(Platform::String^ strSrc)</span><br><span class="line">&#123;</span><br><span class="line">	const wchar_t* pWStr = strSrc-&gt;Data();</span><br><span class="line">	int nStrLen = WideCharToMultiByte(CP_UTF8, 0, pWStr, -1, NULL, 0, NULL, NULL);</span><br><span class="line">	char* pStr = new char[nStrLen + 1];</span><br><span class="line">	memset(pStr, 0, nStrLen + 1);</span><br><span class="line">	WideCharToMultiByte(CP_UTF8, 0, pWStr, -1, pStr, nStrLen, NULL, NULL);;</span><br><span class="line"></span><br><span class="line">	std::string strDst = std::string(pStr);</span><br><span class="line"></span><br><span class="line">	delete[] pStr;</span><br><span class="line">	std::string ret = replace_all_distinct(strDst, &quot;\r\n&quot;, &quot;\n&quot;);</span><br><span class="line">	return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://dannyjiajia.github.io/2016/07/20/multiline-textbox-wp8-1/" data-id="cm5xoav42002fj1s957v2cukh" data-title="WindowsPhone的TextBox多行支持及疑问" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cocos2dx/" rel="tag">Cocos2dx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows-Phone/" rel="tag">Windows Phone</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/22/findWay/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          用Lua实现A*寻路算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/15/etc1-alpha-on-android-cocos2dx/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Cocos2dx在Android上使用ETC1+Alpha压缩纹理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ant/" rel="tag">Ant</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Antenna/" rel="tag">Antenna</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cocos2dx/" rel="tag">Cocos2dx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ETC/" rel="tag">ETC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GCD/" rel="tag">GCD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/" rel="tag">Gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/" rel="tag">Lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Next/" rel="tag">Next</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenGL/" rel="tag">OpenGL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Platform/" rel="tag">Platform</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RunLoop/" rel="tag">RunLoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sublime/" rel="tag">Sublime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Mobile/" rel="tag">Windows Mobile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows-Phone/" rel="tag">Windows Phone</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cmake/" rel="tag">cmake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/curl/" rel="tag">curl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lua/" rel="tag">lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zlib/" rel="tag">zlib</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 12.5px;">Android Studio</a> <a href="/tags/Ant/" style="font-size: 12.5px;">Ant</a> <a href="/tags/Antenna/" style="font-size: 12.5px;">Antenna</a> <a href="/tags/Cocos2dx/" style="font-size: 15px;">Cocos2dx</a> <a href="/tags/ETC/" style="font-size: 10px;">ETC</a> <a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/Gradle/" style="font-size: 12.5px;">Gradle</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/OpenGL/" style="font-size: 12.5px;">OpenGL</a> <a href="/tags/Optimize/" style="font-size: 10px;">Optimize</a> <a href="/tags/Platform/" style="font-size: 10px;">Platform</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RxJava/" style="font-size: 10px;">RxJava</a> <a href="/tags/Sublime/" style="font-size: 10px;">Sublime</a> <a href="/tags/Windows/" style="font-size: 12.5px;">Windows</a> <a href="/tags/Windows-Mobile/" style="font-size: 12.5px;">Windows Mobile</a> <a href="/tags/Windows-Phone/" style="font-size: 17.5px;">Windows Phone</a> <a href="/tags/cmake/" style="font-size: 10px;">cmake</a> <a href="/tags/curl/" style="font-size: 10px;">curl</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/lua/" style="font-size: 10px;">lua</a> <a href="/tags/shell/" style="font-size: 12.5px;">shell</a> <a href="/tags/zlib/" style="font-size: 10px;">zlib</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/31/think-about-storio/">介绍下StorIOSQLite到RxJava</a>
+          </li>
+        
+          <li>
+            <a href="/2017/02/13/login-with-curl/">2017开篇:curl使用备忘</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/16/autopackage/">不同平台下的项目自动打包方式</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/03/thinking-core-graphics/">说说Core Graphics</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/25/thinking-about-macro/">以ABS宏为例说说Clang中的宏定义方式技巧</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 DannyHe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

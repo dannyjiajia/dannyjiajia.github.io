@@ -14,12 +14,19 @@ import TabItem from '@theme/TabItem';
 
 <!-- truncate -->
 
+## 创建`gh-pages`分支
+
+创建分支并将文件删除干净
+
 ## GitHub Workflow
+
+在主分支创建Workflow配置文件
+
 ```mdx-code-block
 <BrowserWindow>
 ```
 
-```yml title=".github\workflows\deploy-docusaurus.yml" 
+```yml title=".github\workflows\deploy.yml" 
 name: Deploy to GitHub Pages
 
 on:
@@ -37,13 +44,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 23.x
           cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build slides
-        run: yarn reveal
       - name: Build website
         run: yarn build
 
@@ -68,45 +73,23 @@ jobs:
 </BrowserWindow>
 ```
 
+### 设置Workflow权限
 
-```mdx-code-block
-<BrowserWindow>
-```
+Look at the left menu click on Action menu and scroll down to Workflow permissions
 
-```yml title=".github\workflows\deploy.yml" 
-on:
-  push:
-    branches:
-      - main # Change this to your default branch if it's different
+![Select Read and Write permission](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*b1o87pC-VHsg7A8yXpbqzQ.png)
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18 # Use Node.js 18 here
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build site
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build # Change this if your build output directory is different
-```
-
-```mdx-code-block
-</BrowserWindow>
-```
+## 设置gh-pages分支为pages
 
 Go to GitHub project setting and click on Page
+
+![Go to GitHub project setting and click on Page](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*1jhlETk198QNJZVhmXDUyA.png)
+
+Select Deploy from a branch
+
+Select branch gh-pages and /root
+
+![Go to GitHub project setting and click on Page](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*E-LvZmgAXrMH88v-jSrZwA.png)
+
+## Enjoy!

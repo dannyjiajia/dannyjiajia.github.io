@@ -94,7 +94,7 @@ const config: Config = {
           ],
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/dannyjiajia/dannyjiajia.github.io',
           position: 'right',
           className: "header-github-link",
           "aria-label": "GitHub repository",

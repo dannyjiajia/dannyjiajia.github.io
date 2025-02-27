@@ -1,0 +1,139 @@
+---
+title: 多个docker-compose配置的管理思路
+authors: dannyhe
+---
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+服务上经常部署多个docker-compose配置文件的项目,比如算法服务器同事部署了`ragflow`、`vllm`、`whisper`等项目,经常需要重启或关闭,算力有限:(
+这里提供一个管理多个docker-compose配置文件的思路.
+
+<!-- truncate -->
+
+整体使用`yaml` + [`task`](https://taskfile.dev) + [`yq`](https://github.com/mikefarah/yq)的方式管理服务,
+首先需要将多个docker-compose的配置文件管理起来，然后通过编写task的配置文件将不同的docker-compose配置文件注入到命令中。
+
+```mdx-code-block
+<BrowserWindow>
+```
+
+```yml title="docker-compose.servers.yml"
+projects:
+  one-api:
+    path: /home/one-api/docker-compose.yml
+  apisix:
+    path: /home/new/apisix/docker-compose.yml
+```
+
+```mdx-code-block
+</BrowserWindow>
+```
+
+
+
+
+```mdx-code-block
+<BrowserWindow>
+```
+
+```yml title="Taskfile.yml"
+version: '3'
+
+vars:
+  COMPOSE_LIST:
+    sh: yq e '.projects | keys' docker-compose.servers.yml
+
+tasks:
+  status:
+    silent: true
+    desc: 显示所有项目状态
+    cmds:
+      - for: { var: COMPOSE_LIST }
+        cmd: |
+          if [ "-" != "{{ .ITEM }}" ]; then
+            docker-compose -f `yq e ".projects.{{.ITEM}}.path" docker-compose.servers.yml` ps
+          fi 
+  default:
+    silent: true
+    desc: 列出所有可用的项目
+    cmds:
+      - for: { var: COMPOSE_LIST }
+        cmd: |
+          if [ "-" != "{{ .ITEM }}" ]; then
+            echo {{ .ITEM }}
+          fi 
+    
+  up-*:
+    desc: 启动指定项目
+    deps: 
+      - task: check-project
+        vars:
+          PROJECT: 
+            ref: .PROJECT
+    vars:
+      PROJECT: '{{index .MATCH 0}}'
+      COMPOSE_PATH:
+          sh: yq e ".projects.{{.PROJECT}}.path" docker-compose.servers.yml
+    cmds:
+      - docker-compose -f {{.COMPOSE_PATH}} up -d {{.CLI_ARGS}}
+
+  down-*:
+    desc: 停止指定项目
+    deps: 
+      - task: check-project
+        vars:
+          PROJECT: 
+            ref: .PROJECT
+    vars:
+      PROJECT: '{{index .MATCH 0}}'
+      COMPOSE_PATH:
+          sh: yq e ".projects.{{.PROJECT}}.path" docker-compose.servers.yml
+    cmds:
+      - docker-compose -f {{.COMPOSE_PATH}} down {{.CLI_ARGS}}
+
+  ps-*:
+    desc: 查看项目状态
+    deps: 
+      - task: check-project
+        vars:
+          PROJECT: 
+            ref: .PROJECT
+    vars:
+      PROJECT: '{{index .MATCH 0}}'
+      COMPOSE_PATH:
+          sh: yq e ".projects.{{.PROJECT}}.path" docker-compose.servers.yml
+    cmds:
+      - docker-compose -f {{.COMPOSE_PATH}} ps
+      
+
+  logs-*:
+    desc: 查看指定项目日志
+    deps: 
+      - task: check-project
+        vars:
+          PROJECT: 
+            ref: .PROJECT
+    vars:
+      PROJECT: '{{index .MATCH 0}}'
+      COMPOSE_PATH:
+          sh: yq e ".projects.{{.PROJECT}}.path" docker-compose.servers.yml
+    cmds:
+      - docker-compose -f {{.COMPOSE_PATH}} logs {{.CLI_ARGS}}
+
+  check-project:
+    internal: true
+    preconditions:
+      - sh: test -n "{{.PROJECT}}"
+        msg: "请指定项目名称"
+      - sh: yq e ".projects.{{.PROJECT}}" docker-compose.servers.yml | grep -q "^path:"
+        msg: "项目 {{.PROJECT}} 不存在"
+```
+
+```mdx-code-block
+</BrowserWindow>
+```
+
+
+

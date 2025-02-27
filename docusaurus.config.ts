@@ -82,6 +82,10 @@ const config: Config = {
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
       title: 'Notes',
+      logo: {
+        alt: "Notes",
+        src: "img/logo.svg",
+      },
       items: [
         {
           type: 'localeDropdown',

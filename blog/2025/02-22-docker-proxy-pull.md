@@ -23,6 +23,7 @@ external-ui: "ui"
 - external-ui ui文件的路径，由于此处config.yaml文件和ui文件夹在同一目录下，所以只需文件夹名称即可
 
 ui文件下载
+<!-- truncate -->
 ~~~shell
 wget https://github.com/haishanh/yacd/releases/download/v0.3.7/yacd.tar.xz
 tar xvJf yacd.tar.xz 

@@ -37,9 +37,19 @@ git co -b dev
 这里是以创建新的本地分支`dev`为例演示`checkout`的别名`co`
 :::
 
-## Git lfs 大文件容易超时
+## Git lfs 
 
+### 大文件容易超时
 加大活跃时间
 ~~~
 git config lfs.activitytimeout 60
 ~~~
+
+### 显示文件下载进度
+
+~~~
+GIT_LFS_SKIP_SMUDGE=1 git clone https://www.modelscope.cn/Qwen/Qwen2.5-1.5B-Instruct.git
+cd Qwen2.5-1.5B-Instruct
+git lfs pull
+~~~
+

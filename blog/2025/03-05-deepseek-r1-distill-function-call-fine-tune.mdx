@@ -1,0 +1,130 @@
+---
+title: 微调deepseek-r1蒸馏版工具调用
+authors: dannyhe
+tags:
+  - deepseek
+  - nlp
+  - llm
+---
+
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+有关deepseek-r1蒸馏版的微调方案，目前主流在用`<think></think>`的形式组织相关语料样本，目前还未涉及到工具调用(Function-Call)的形式，
+刚好同事需要基于[LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)构建思维链的工具调用语料，于是我顺便补充了一下LLaMA-Factory关于`chat template`的单元测试，以推导出LLaMA-Factory中关于样本集处理以及抛开`JSON`格式理解本质`chat template`。
+思维不要固化。
+
+<!-- truncate -->
+
+
+
+```mdx-code-block
+<BrowserWindow>
+<Tabs>
+<TabItem value="json" label="tools_dr1.json">
+```
+
+```json
+[
+    {
+        "conversations": [
+          {
+            "value": "Hi, can you tell me the current stock price of Apple?",
+            "from": "human"
+        },
+        {
+            "value": "<think>Alright, the user asked for the current stock price of Apple. Looking at the tools available, there's a function called get_stock_price which exactly fits this request. I'll need to call this function with the parameter company set to 'Apple' to retrieve the information the user is asking for. This seems like the most straightforward and appropriate action to take.\n</think><tool_call>\n{'name': 'get_stock_price', 'arguments': {'company': 'Apple'}}\n</tool_call>",
+            "from": "gpt"
+        },
+        {
+            "value": "<tool_response>\n{'stock_price': '$150.75'}\n</tool_response>",
+            "from": "human"
+        },
+        {
+            "value": "The current stock price of Apple is $150.75.",
+            "from": "gpt"
+        },
+        {
+            "value": "That's great. Can you also tell me the stock price for Microsoft?",
+            "from": "human"
+        },
+        {
+            "value": "<think>Alright, let me try to figure out how to handle this user's request. The user first asked about Apple's stock price, and I responded by calling the get_stock_price function with 'Apple' as the argument. The tool provided the price, and I passed that information back to the user.\n\nNow, the user is asking for the stock price of Microsoft. I need to determine the appropriate action here. Looking at the tools available, there's still the get_stock_price function, which is designed to fetch current stock prices. Since the user is requesting another company's stock price, it makes sense to use the same function again but with the company name changed to Microsoft. \n\nI shouldn't assume any other tools are needed because the available functions are specifically tailored for stock prices and movie details. In this case, the relevant function is get_stock_price. I should ensure that the function is called with the correct parameter, 'Microsoft' in this case, to retrieve the accurate information the user is seeking. This approach is efficient and aligns directly with the user's request without making unnecessary assumptions or using unrelated tools.\n</think><tool_call>\n{'name': 'get_stock_price', 'arguments': {'company': 'Microsoft'}}\n</tool_call>",
+            "from": "gpt"
+        },
+        {
+            "value": "<tool_response>\n{'stock_price': '$210.22'}\n</tool_response>",
+            "from": "human"
+        },
+        {
+            "value": "The current stock price of Microsoft is $210.22.",
+            "from": "gpt"
+        },
+        {
+            "value": "Thank you for the information.",
+            "from": "human"
+        },
+        {
+            "value": "You're welcome! If you have any other questions, feel free to ask.",
+            "from": "gpt"
+        }
+        ],
+        "system": "You are a function calling AI model. You are provided with function signatures within <tools></tools> XML tags.You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions.Here are the available tools:<tools> [{'type': 'function', 'function': {'name': 'get_stock_price', 'description': 'Get the current stock price of a company', 'parameters': {'type': 'object', 'properties': {'company': {'type': 'string', 'description': 'The name of the company'}}, 'required': ['company']}}}, {'type': 'function', 'function': {'name': 'get_movie_details', 'description': 'Get details about a movie', 'parameters': {'type': 'object', 'properties': {'title': {'type': 'string', 'description': 'The title of the movie'}}, 'required': ['title']}}}] </tools>Use the following pydantic model json schema for each tool call you will make: {'title': 'FunctionCall', 'type': 'object', 'properties': {'arguments': {'title': 'Arguments', 'type': 'object'}, 'name': {'title': 'Name', 'type': 'string'}}, 'required': ['arguments', 'name']}For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:\n<tool_call>\n{tool_call}\n</tool_call>",
+      }
+]
+```
+
+```mdx-code-block
+</TabItem>
+<TabItem value="python" label="test_dataset.py">
+```
+
+```python
+import os
+from typing import TYPE_CHECKING, Sequence
+
+import pytest
+DEEPSEEK_DISTILL_QWEN_MODEL = os.getenv("DEEPSEEK_DISTILL_QWEN_PATH")
+from transformers import AutoTokenizer
+
+from llamafactory.data import get_template_and_fix_tokenizer
+from llamafactory.data.template import parse_template
+from llamafactory.hparams import DataArguments,ModelArguments,TrainingArguments
+from llamafactory.data.loader import get_dataset
+@pytest.mark.skipif(not DEEPSEEK_DISTILL_QWEN_MODEL, reason="Gated model.")
+def test_tools_deepseek3_without_function_call() -> None:
+    tokenizer = AutoTokenizer.from_pretrained(DEEPSEEK_DISTILL_QWEN_MODEL)
+    template = get_template_and_fix_tokenizer(tokenizer, DataArguments(template="deepseek3"))
+    dataset_module = get_dataset(template, ModelArguments(model_name_or_path=DEEPSEEK_DISTILL_QWEN_MODEL), 
+                                 DataArguments(template="deepseek3",dataset="tool_zh_dr1"), 
+                                 TrainingArguments(), stage="sft", tokenizer=tokenizer)
+    assert 'train_dataset' in dataset_module
+    dataset = dataset_module['train_dataset']
+    assert len(dataset) == 1
+    expect_input = """<｜begin▁of▁sentence｜><｜User｜>Hi, can you tell me the current stock price of Apple?<｜Assistant｜><think>Alright, the user asked for the current stock price of Apple. Looking at the tools available, there's a function called get_stock_price which exactly fits this request. I'll need to call this function with the parameter company set to 'Apple' to retrieve the information the user is asking for. This seems like the most straightforward and appropriate action to take.
+</think><tool_call>
+{'name': 'get_stock_price', 'arguments': {'company': 'Apple'}}
+</tool_call><｜end▁of▁sentence｜><｜User｜><tool_response>
+{'stock_price': '$150.75'}
+</tool_response><｜Assistant｜>The current stock price of Apple is $150.75.<｜end▁of▁sentence｜><｜User｜>That's great. Can you also tell me the stock price for Microsoft?<｜Assistant｜><think>Alright, let me try to figure out how to handle this user's request. The user first asked about Apple's stock price, and I responded by calling the get_stock_price function with 'Apple' as the argument. The tool provided the price, and I passed that information back to the user.
+
+Now, the user is asking for the stock price of Microsoft. I need to determine the appropriate action here. Looking at the tools available, there's still the get_stock_price function, which is designed to fetch current stock prices. Since the user is requesting another company's stock price, it makes sense to use the same function again but with the company name changed to Microsoft. 
+
+I shouldn't assume any other tools are needed because the available functions are specifically tailored for stock prices and movie details. In this case, the relevant function is get_stock_price. I should ensure that the function is called with the correct parameter, 'Microsoft' in this case, to retrieve the accurate information the user is seeking. This approach is efficient and aligns directly with the user's request without making unnecessary assumptions or using unrelated tools.
+</think><tool_call>
+{'name': 'get_stock_price', 'arguments': {'company': 'Microsoft'}}
+</tool_call><｜end▁of▁sentence｜><｜User｜><tool_response>
+{'stock_price': '$210.22'}
+</tool_response><｜Assistant｜>The current stock price of Microsoft is $210.22.<｜end▁of▁sentence｜><｜User｜>Thank you for the information.<｜Assistant｜>You're welcome! If you have any other questions, feel free to ask.<｜end▁of▁sentence｜>"""
+    input = tokenizer.decode(dataset[0]['input_ids'], skip_special_tokens=False)
+    assert expect_input == input
+```
+
+```mdx-code-block
+</TabItem>
+</Tabs>
+</BrowserWindow>
+```
+

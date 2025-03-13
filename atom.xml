@@ -14,7 +14,7 @@
         <summary type="html"><![CDATA[梳理下大语言模型的网络结构，及对应相关的任务。]]></summary>
         <content type="html"><![CDATA[<p>梳理下大语言模型的网络结构，及对应相关的任务。</p>
 <p><img decoding="async" loading="lazy" alt="LLMS" src="https://dannyjiajia.github.io/assets/images/llms-7f658fa8900478e5fcac5c340d28a72b.png" width="1992" height="1534" class="img_ev3q"></p>
-<table><thead><tr><th>架构</th><th>代表模型</th><th>任务</th></tr></thead><tbody><tr><td>Encoder models</td><td>BERT ALBERT RoBERTa</td><td>句子分类、命名实体识别、提取式问答(extractive question answering)</td></tr><tr><td>Decoder models</td><td>GPT</td><td>文本生成任务</td></tr><tr><td>Sequence-to-sequence models(Encoder-decoder models)</td><td>BART T5</td><td>总结、翻译或生成性问答</td></tr></tbody></table>]]></content>
+<table><thead><tr><th>架构</th><th>代表模型</th><th>任务</th></tr></thead><tbody><tr><td>Encoder models</td><td>BERT ALBERT RoBERTa</td><td>句子分类、命名实体识别、提取式问答(extractive question answering)</td></tr><tr><td>Decoder models</td><td>GPT</td><td>文本生成任务</td></tr><tr><td>Encoder-decoder models</td><td>BART T5</td><td>总结、翻译或生成性问答</td></tr></tbody></table>]]></content>
         <author>
             <name>Danny He</name>
             <uri>https://dannyjiajia.github.io/</uri>

@@ -129,7 +129,7 @@ int main()
 <!-- truncate -->
 ### RunLoop
 
-~~~
+~~~objectivec
 #import <Foundation/Foundation.h>
 
 static void

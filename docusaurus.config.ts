@@ -53,7 +53,7 @@ const config: Config = {
           routeBasePath: '/',
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
-          blogSidebarTitle: 'All posts',
+          // blogSidebarTitle: '',
           blogSidebarCount: 'ALL',
           postsPerPage: 'ALL',
           showReadingTime: true,
